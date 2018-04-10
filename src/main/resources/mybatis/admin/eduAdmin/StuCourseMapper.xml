@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ias.admin.eduAdmin.mapper.StuCourseMapper">
+
+	<select id="get" resultType="com.ias.admin.eduAdmin.pojo.StuCoursePO">
+		select `Id`,`arr_course_id`,`student_id`,`attend`,`reason`,`material`,`approval` from att_stu_course where Id = #{id}
+	</select>
+
+	<select id="list" resultType="com.ias.admin.eduAdmin.pojo.StuCoursePO">
+		select `Id`,`arr_course_id`,`student_id`,`attend`,`reason`,`material`,`approval` from att_stu_course
+        <where>  
+		  		  <if test="id != null and id != ''"> and Id = #{id} </if>
+		  		  <if test="arrCourseId != null and arrCourseId != ''"> and arr_course_id = #{arrCourseId} </if>
+		  		  <if test="studentId != null and studentId != ''"> and student_id = #{studentId} </if>
+		  		  <if test="attend != null and attend != ''"> and attend = #{attend} </if>
+		  		  <if test="reason != null and reason != ''"> and reason = #{reason} </if>
+		  		  <if test="material != null and material != ''"> and material = #{material} </if>
+		  		  <if test="approval != null and approval != ''"> and approval = #{approval} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by Id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from att_stu_course
+		 <where>  
+		  		  <if test="id != null and id != ''"> and Id = #{id} </if>
+		  		  <if test="arrCourseId != null and arrCourseId != ''"> and arr_course_id = #{arrCourseId} </if>
+		  		  <if test="studentId != null and studentId != ''"> and student_id = #{studentId} </if>
+		  		  <if test="attend != null and attend != ''"> and attend = #{attend} </if>
+		  		  <if test="reason != null and reason != ''"> and reason = #{reason} </if>
+		  		  <if test="material != null and material != ''"> and material = #{material} </if>
+		  		  <if test="approval != null and approval != ''"> and approval = #{approval} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.ias.admin.eduAdmin.pojo.StuCoursePO" useGeneratedKeys="true" keyProperty="id">
+		insert into att_stu_course
+		(
+			`arr_course_id`, 
+			`student_id`, 
+			`attend`, 
+			`reason`, 
+			`material`, 
+			`approval`
+		)
+		values
+		(
+			#{arrCourseId}, 
+			#{studentId}, 
+			#{attend}, 
+			#{reason}, 
+			#{material}, 
+			#{approval}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.ias.admin.eduAdmin.pojo.StuCoursePO">
+		update att_stu_course 
+		<set>
+			<if test="arrCourseId != null">`arr_course_id` = #{arrCourseId}, </if>
+			<if test="studentId != null">`student_id` = #{studentId}, </if>
+			<if test="attend != null">`attend` = #{attend}, </if>
+			<if test="reason != null">`reason` = #{reason}, </if>
+			<if test="material != null">`material` = #{material}, </if>
+			<if test="approval != null">`approval` = #{approval}</if>
+		</set>
+		where Id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from att_stu_course where Id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from att_stu_course where Id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

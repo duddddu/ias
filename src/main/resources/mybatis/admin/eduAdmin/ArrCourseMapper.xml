@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ias.admin.eduAdmin.mapper.ArrCourseMapper">
+
+	<select id="get" resultType="com.ias.admin.eduAdmin.pojo.ArrCoursePO">
+		select `Id`,`term_id`,`course_id`,`week_id`,`day_id`,`section_id`,`teacher_id`,`classroom_id`,`attend` from att_arr_course where Id = #{id}
+	</select>
+
+	<select id="list" resultType="com.ias.admin.eduAdmin.pojo.ArrCoursePO">
+		select `Id`,`term_id`,`course_id`,`week_id`,`day_id`,`section_id`,`teacher_id`,`classroom_id`,`attend` from att_arr_course
+        <where>  
+		  		  <if test="id != null and id != ''"> and Id = #{id} </if>
+		  		  <if test="termId != null and termId != ''"> and term_id = #{termId} </if>
+		  		  <if test="courseId != null and courseId != ''"> and course_id = #{courseId} </if>
+		  		  <if test="weekId != null and weekId != ''"> and week_id = #{weekId} </if>
+		  		  <if test="dayId != null and dayId != ''"> and day_id = #{dayId} </if>
+		  		  <if test="sectionId != null and sectionId != ''"> and section_id = #{sectionId} </if>
+		  		  <if test="teacherId != null and teacherId != ''"> and teacher_id = #{teacherId} </if>
+		  		  <if test="classroomId != null and classroomId != ''"> and classroom_id = #{classroomId} </if>
+		  		  <if test="attend != null and attend != ''"> and attend = #{attend} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by Id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from att_arr_course
+		 <where>  
+		  		  <if test="id != null and id != ''"> and Id = #{id} </if>
+		  		  <if test="termId != null and termId != ''"> and term_id = #{termId} </if>
+		  		  <if test="courseId != null and courseId != ''"> and course_id = #{courseId} </if>
+		  		  <if test="weekId != null and weekId != ''"> and week_id = #{weekId} </if>
+		  		  <if test="dayId != null and dayId != ''"> and day_id = #{dayId} </if>
+		  		  <if test="sectionId != null and sectionId != ''"> and section_id = #{sectionId} </if>
+		  		  <if test="teacherId != null and teacherId != ''"> and teacher_id = #{teacherId} </if>
+		  		  <if test="classroomId != null and classroomId != ''"> and classroom_id = #{classroomId} </if>
+		  		  <if test="attend != null and attend != ''"> and attend = #{attend} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.ias.admin.eduAdmin.pojo.ArrCoursePO" useGeneratedKeys="true" keyProperty="id">
+		insert into att_arr_course
+		(
+			`term_id`, 
+			`course_id`, 
+			`week_id`, 
+			`day_id`, 
+			`section_id`, 
+			`teacher_id`, 
+			`classroom_id`, 
+			`attend`
+		)
+		values
+		(
+			#{termId}, 
+			#{courseId}, 
+			#{weekId}, 
+			#{dayId}, 
+			#{sectionId}, 
+			#{teacherId}, 
+			#{classroomId}, 
+			#{attend}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.ias.admin.eduAdmin.pojo.ArrCoursePO">
+		update att_arr_course 
+		<set>
+			<if test="termId != null">`term_id` = #{termId}, </if>
+			<if test="courseId != null">`course_id` = #{courseId}, </if>
+			<if test="weekId != null">`week_id` = #{weekId}, </if>
+			<if test="dayId != null">`day_id` = #{dayId}, </if>
+			<if test="sectionId != null">`section_id` = #{sectionId}, </if>
+			<if test="teacherId != null">`teacher_id` = #{teacherId}, </if>
+			<if test="classroomId != null">`classroom_id` = #{classroomId}, </if>
+			<if test="attend != null">`attend` = #{attend}</if>
+		</set>
+		where Id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from att_arr_course where Id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from att_arr_course where Id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

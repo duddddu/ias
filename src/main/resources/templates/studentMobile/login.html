@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no" />
+    <script type="text/javascript" src="/common/js/common.js"></script>
+    <link href="/common/css/reset.css" rel="stylesheet" type="text/css">
+    <link href="/common/css/base.css" rel="stylesheet" type="text/css">
+    <link href="/common/css/header.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/common/css/login.css" />
+
+
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>ias</title>
+    <meta name="keywords" content="ias学生系统">
+    <meta name="description" content="ias学生系统">
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html"/>
+    <![endif]-->
+    <script>
+        if (window.top !== window.self) {
+            window.top.location = window.location;
+        }
+    </script>
+
+</head>
+
+<body>
+<header><span onclick="javascript:history.go(-1)"></span>学生登录</header>
+<div class="head"></div>
+<form action="" id="signupForm">
+    <ul class="form">
+        <li><input type="text" name="username" placeholder="请输入用户名" value="sm001"/></li>
+        <li><input type="password" name="password" placeholder="请输入密码" value="1"/></li>
+        <li><button class="mybutton">登&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录</button></li>
+
+    </ul>
+
+
+
+</form>
+<ul class="fix miss">
+    <li class="l"><a href="register.html">忘记密码？</a></li>
+    <li class="r"><a href="recover.html">账号注册</a></li>
+</ul>
+<div id="fifth" class="g6"><span class="mr20"></span>第三方登录<span class="ml20"></span></div>
+<ul class="df jcsb" id="footer">
+    <li><img src="/common/img/icon1.png" alt=""/><p>QQ</p></li>
+    <li><img src="/common/img/icon2.png" alt=""/><p>微信</p></li>
+    <li><img src="/common/img/icon3.png" alt=""/><p>微博</p></li>
+</ul>
+
+
+
+
+
+<script th:inline="javascript"> var ctx = [[@{/}]] ; </script>
+<!-- 全局js -->
+<script src="/common/js/jquery.min.js?v=2.1.4" th:src="@{/common/js/jquery.min.js?v=2.1.4}"></script>
+<script src="/common/js/bootstrap.min.js?v=3.3.6" th:src="@{/common/js/bootstrap.min.js?v=3.3.6}"></script>
+
+<!-- 自定义js -->
+<script src="/common/js/content.js?v=1.0.0" th:src="@{/common/js/content.js?v=1.0.0}"></script>
+
+<!-- jQuery Validation plugin javascript-->
+<script src="/common/js/ajax-util.js"></script>
+<script src="/common/js/plugins/validate/jquery.validate.min.js" th:src="@{/common/js/plugins/validate/jquery.validate.min.js}"></script>
+<script src="/common/js/plugins/validate/messages_zh.min.js" th:src="@{/common/js/plugins/validate/messages_zh.min.js}"></script>
+<script src="/common/js/plugins/layer/layer.min.js" th:src="@{/common/js/plugins/layer/layer.min.js}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        validateRule();
+    });
+
+    $.validator.setDefaults({
+        submitHandler: function () {
+            login();
+        }
+    });
+
+    function login() {
+        $.ajax({
+            type: "POST",
+            url: ctx+"sm/login",
+            data: $('#signupForm').serialize(),
+            success: function (r) {
+                if (r.code == 0) {
+                    parent.location.href = '/sm/index';
+                } else {
+                    layer.msg(r.msg);
+                }
+            }
+        });
+    }
+
+    function validateRule() {
+        var icon = "<i class='fa fa-times-circle'></i> ";
+        $("#signupForm").validate({
+            rules: {
+                username: {
+                    required: true
+                },
+                password: {
+                    required: true
+                }
+            },
+            messages: {
+                username: {
+                    required: icon + "请输入您的用户名",
+                },
+                password: {
+                    required: icon + "请输入您的密码",
+                }
+            }
+        })
+    }
+</script>
+
+</body>
+
+
+</html>

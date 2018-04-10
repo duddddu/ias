@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ias.admin.system.mapper.LogMapper">
+
+    <select id="get" resultType="com.ias.admin.system.pojo.LogPO">
+        select * from sys_log where id=#{id}
+    </select>
+
+    <select id="list" resultType="com.ias.admin.system.pojo.LogPO">
+        select * from sys_log
+        <where>
+            <if test="id != null and id != '' "> and id = #{id}</if>
+            <if test="functions != null and functions != '' ">and functions = #{functions}</if>
+            <if test="operation != null and operation != '' "> and operation = #{operation}</if>
+            <if test="record != null and record != '' "> and record = #{record}</if>
+            <if test="content != null and content != '' ">and content = #{content}</if>
+            <if test="operatorId != null and operatorId != '' ">and operator_id</if>
+            <if test="operationTime != null and operationTime != '' ">and operation_time</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from sys_log
+        <where>
+            <if test="id != null and id != '' "> and id = #{id}</if>
+            <if test="functions != null and functions != '' ">and functions = #{functions}</if>
+            <if test="operation != null and operation != '' "> and operation = #{operation}</if>
+            <if test="record != null and record != '' "> and record = #{record}</if>
+            <if test="content != null and content != '' ">and content = #{content}</if>
+            <if test="operatorId != null and operatorId != '' ">and operator_id</if>
+            <if test="operationTime != null and operationTime != '' ">and operation_time</if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.ias.admin.system.pojo.LogPO" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_log
+        (
+        functions,
+        operation,
+        record,
+        content,
+        operator_id,
+        operation_time
+        )
+        VALUES
+        (
+        #{functions},
+        #{operation},
+        #{record},
+        #{content},
+        #{operatorId},
+        #{operationTime}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ias.admin.system.pojo.LogPO">
+        update sys_log
+        <set>
+            <if test="id != null and id != '' "> id = #{id},</if>
+            <if test="functions != null and functions != '' ">functions = #{functions},</if>
+            <if test="operation != null and operation != '' ">operation = #{operation},</if>
+            <if test="record != null and record != '' "> record = #{record},</if>
+            <if test="content != null and content != '' ">content = #{content},</if>
+            <if test="operatorId != null and operatorId != '' ">operator_id = #{operatorId},</if>
+            <if test="operationTime != null and operationTime != '' ">operation_time = #{operationTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+        delete from sys_log where id = #{value}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from sys_log where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

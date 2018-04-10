@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ias.admin.device.mapper.DeviceMapper">
+
+    <select id="get" resultType="com.ias.admin.device.pojo.DevicePO">
+        select * from device where id = #{id}
+    </select>
+
+    <select id="list" resultType="com.ias.admin.device.pojo.DevicePO">
+        select * from device
+        <where>
+            <if test="id != null and id != ''"> and id = #{id} </if>
+            <if test="number != null and number != ''"> and number = #{number} </if>
+            <if test="name != null and name != ''"> and name = #{name} </if>
+            <if test="state != null and state != ''"> and state = #{state} </if>
+            <if test="classroomId != null and classroomId != '' ">and classroom_id = #{classroomId}</if>
+            <if test="lastStartTime != null and lastStartTime != ''"> and last_start_time = #{lastStartTime} </if>
+            <if test="type != null and type != '' ">and type = #{type}</if>
+            <if test="ip != null and ip != ''"> and ip = #{ip} </if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from device
+        <where>
+            <if test="id != null and id != ''"> and id = #{id} </if>
+            <if test="number != null and number != ''"> and number = #{number} </if>
+            <if test="name != null and name != ''"> and name = #{name} </if>
+            <if test="state != null and state != ''"> and state = #{state} </if>
+            <if test="classroomId != null and classroomId != '' ">and classroom_id = #{classroomId}</if>
+            <if test="lastStartTime != null and lastStartTime != ''"> and last_start_time = #{lastStartTime} </if>
+            <if test="type != null and type != '' ">and type = #{type}</if>
+            <if test="ip != null and ip != ''"> and ip = #{ip} </if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.ias.admin.device.pojo.DevicePO" useGeneratedKeys="true" keyProperty="id">
+        insert into device
+        (
+        number,
+        name,
+        ip,
+        state,
+        type,
+        classroom_id
+        )
+        values
+        (
+        #{number},
+        #{name},
+        #{ip},
+        #{state},
+        #{type},
+        #{classroomId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ias.admin.device.pojo.DevicePO">
+        update device
+        <set>
+            <if test="number != null and number != ''"> number = #{number}, </if>
+            <if test="name != null and name != ''">name = #{name}, </if>
+            <if test="state != null and state != ''"> state = #{state}, </if>
+            <if test="classroomId != null and classroomId != '' ">classroom_id = #{classroomId},</if>
+            <if test="type != null and type != '' ">type = #{type},</if>
+            <if test="ip != null and ip != ''">  ip = #{ip} </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+        delete from device where id = #{value}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from device where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

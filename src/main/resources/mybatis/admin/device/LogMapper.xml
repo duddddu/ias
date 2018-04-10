@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ias.admin.device.mapper.DLogMapper">
+
+	<select id="get" resultType="com.ias.admin.device.pojo.DLogPO">
+		select `id`,`number`,`name`,`ip`,`operations`,`operation_time` from device_log where id = #{id}
+	</select>
+
+	<select id="list" resultType="com.ias.admin.device.pojo.DLogPO">
+		select `id`,`number`,`name`,`ip`,`operations`,`operation_time` from device_log
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="number != null and number != ''"> and number = #{number} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="ip != null and ip != ''"> and ip = #{ip} </if>
+		  		  <if test="operations != null and operations != ''"> and operations = #{operations} </if>
+		  		  <if test="operationTime != null and operationTime != ''"> and operation_time = #{operationTime} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from device_log
+		 <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="number != null and number != ''"> and number = #{number} </if>
+		  		  <if test="name != null and name != ''"> and name = #{name} </if>
+		  		  <if test="ip != null and ip != ''"> and ip = #{ip} </if>
+		  		  <if test="operations != null and operations != ''"> and operations = #{operations} </if>
+		  		  <if test="operationTime != null and operationTime != ''"> and operation_time = #{operationTime} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.ias.admin.device.pojo.DLogPO" useGeneratedKeys="true" keyProperty="id">
+		insert into device_log
+		(
+			`number`, 
+			`name`, 
+			`ip`, 
+			`operations`, 
+			`operation_time`
+		)
+		values
+		(
+			#{number}, 
+			#{name}, 
+			#{ip}, 
+			#{operations}, 
+			#{operationTime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.ias.admin.device.pojo.DLogPO">
+		update device_log 
+		<set>
+			<if test="number != null">`number` = #{number}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="ip != null">`ip` = #{ip}, </if>
+			<if test="operations != null">`operations` = #{operations}, </if>
+			<if test="operationTime != null">`operation_time` = #{operationTime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from device_log where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from device_log where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ias.admin.system.mapper.MenuMapper">
+
+    <select id="get" resultType="com.ias.admin.system.pojo.MenuPO">
+        select
+        *
+        from sys_menu where id = #{value}
+    </select>
+
+    <select id="list" resultType="com.ias.admin.system.pojo.MenuPO">
+        select
+        *
+        from sys_menu
+        <where>
+            <if test="name != null and name != ''"> and name = #{name} </if>
+            <if test="icon != null and icon != ''"> and icon = #{icon} </if>
+            <if test="parentId != null and parentId != '' ">and parent_id = #{parentId}</if>
+            <if test="url != null and url != ''"> and url = #{url} </if>
+            <if test="perms != null and perms != '' "> and perms = #{perms}</if>
+            <if test="display != null and display != ''"> and display = #{display} </if>
+            <if test="type != null and type != '' ">and type = #{type}</if>
+            <if test="createTime != null and createTime != '' ">and create_time = #{createTime}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from sys_menu
+        <where>
+            <if test="id != null and id != '' ">and id = #{id}</if>
+            <if test="name != null and name != ''"> and name = #{name} </if>
+            <if test="icon != null and icon != ''"> and icon = #{icon} </if>
+            <if test="parentId != null and parentId != '' ">and parent_id = #{parentId}</if>
+            <if test="url != null and url != ''"> and url = #{url} </if>
+            <if test="perms != null and perms != '' "> and perms = #{perms}</if>
+            <if test="display != null and display != ''"> and display = #{display} </if>
+            <if test="type != null and type != '' ">and type = #{type}</if>
+            <if test="createTime != null and createTime != '' ">and create_time = #{createTime}</if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.ias.admin.system.pojo.MenuPO"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into sys_menu
+        (
+        name,
+        icon,
+        parent_id,
+        url,
+        perms,
+        display,
+        type,
+        create_time
+        )
+        values
+        (
+        #{name},
+        #{icon},
+        #{parentId},
+        #{url},
+        #{perms},
+        #{display},
+        #{type},
+        #{createTime}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ias.admin.system.pojo.MenuPO">
+        update sys_menu
+        <set>
+            <if test="name != null and name != ''"> name = #{name}, </if>
+            <if test="icon != null and icon != ''">icon = #{icon}, </if>
+            <if test="parentId != null and parentId != '' "> parent_id = #{parentId},</if>
+            <if test="url != null and url != ''"> url = #{url}, </if>
+            <if test="perms != null and perms != '' ">perms = #{perms}, </if>
+            <if test="display != null and display != ''"> display = #{display}, </if>
+            <if test="type != null and type != '' ">type = #{type},</if>
+            <if test="sort != null and sort != '' ">sort = #{sort},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+        delete from sys_menu where id = #{value}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from sys_menu where id in
+        <foreach item="menuId" collection="array" open="(" separator=","
+                 close=")"  >
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="listMenuByAdminId" resultType="com.ias.admin.system.pojo.MenuPO">
+        select distinct
+        sm.id , sm.parent_id, sm.name, sm.icon, sm.url,
+        sm.perms, sm.display, sm.type, sm.create_time
+        from sys_menu sm
+        left
+        join sys_perm sp on sm.id = sp.menu_id left join
+        sys_admin sa
+        on sp.role_id =sa.role_id where sa.id = #{id}
+        and sm.type in(0, 1)
+        order by
+        sm.sort
+    </select>
+
+    <select id="listAdminPerms" resultType="string">
+        select distinct sm.perms
+        from sys_menu sm left join
+        sys_perm sp on sm.id = sp.menu_id
+        left join sys_admin sa
+        on sp.role_id = sa.role_id where sa.id
+        = #{id}
+    </select>
+</mapper>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ias.admin.common.mapper.TeacherMapper">
+
+    <select id="get" resultType="com.ias.admin.common.pojo.TeacherPO">
+        select * from
+        att_teacher where id = #{id}
+    </select>
+
+    <select id="list" resultType="com.ias.admin.common.pojo.TeacherPO">
+        select * from att_teacher
+        <where>
+            <if test="name != null and name != '' "> name = #{name},</if>
+            <if test="sex != null and sex != '' ">sex = #{sex}, </if>
+            <if test="age != null and age != '' ">age = #{age}, </if>
+            <if test="face != null and face != '' ">and face = #{face} </if>
+            <if test="departmentId != null and departmentId != '' ">department_id = #{deparmentId}</if>
+            <if test="employeeNumber != null and employeeNumber != ''">and employee_number = #{employeeNumber}</if>
+            <if test="password != null and password != '' ">and password = #{password}</if>
+            <if test="post != null and post != '' ">and post = #{post}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from att_teacher
+        <where>
+            <if test="name != null and name != '' "> name = #{name},</if>
+            <if test="sex != null and sex != '' ">sex = #{sex}, </if>
+            <if test="age != null and age != '' ">age = #{age}, </if>
+            <if test="face != null and face != '' ">and face = #{face} </if>
+            <if test="departmentId != null and departmentId != '' ">department_id = #{deparmentId}</if>
+            <if test="employeeNumber != null and employeeNumber != ''">and employee_number = #{employeeNumber}</if>
+            <if test="password != null and password != '' ">and password = #{password}</if>
+            <if test="post != null and post != '' ">and post = #{post}</if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.ias.admin.common.pojo.TeacherPO">
+        useGeneratedKeys="true" keyProperty="id">
+        insert into att_teacher
+        (
+        name
+        sex,
+        age,
+        face,
+        department_id,
+        employee_number,
+        password,
+        post
+        )
+        values
+        (
+        #{name},
+        #{sex},
+        #{age},
+        #{face},
+        #{departmentId},
+        #{employeeNumber},
+        #{password},
+        #{post}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.ias.admin.common.pojo.TeacherPO">
+        update att_teacher
+        <set>
+            <if test="name != null and name != '' "> name = #{name},</if>
+            <if test="sex != null and sex != '' ">and sex = #{sex}, </if>
+            <if test="age != null and age != '' ">abd age = #{age}, </if>
+            <if test="face != null and face != '' ">and face = #{face} </if>
+            <if test="departmentId != null and departmentId != '' ">and department_id = #{deparmentId}</if>
+            <if test="employeeNumber != null and employeeNumber != ''">and employee_number = #{employeeNumber}</if>
+            <if test="password != null and password != '' ">and password = #{password}</if>
+            <if test="post != null and post != '' ">and post = #{post}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+        delete from att_teacher where id = #{value}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from att_teacher where id in
+        <foreach item="id" collection="array" open="(" separator=","
+                 close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
